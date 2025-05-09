@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 </head>
+
 <body>
     <header>
         <h1>I miei animali Preferiti</h1>
@@ -32,42 +33,62 @@
 <script type="text/babel">
     const AnimalApp = () => {
 
-        const { useState } = React
+        const { useState, useEffect } = React
+        useEffect(() => {
+            animalFunction()
+        }, []);
         const [show, setShow] = useState(false)
         const [animalString, setAnimalString] = useState("")
         const animals = ["Cane", "Gatto", "Pappagallo"]
         const [animalRandom, setAnimalRandom] = useState(animals)
         const animalsChoices = ["Cane", "Gatto", "Pappagallo", "Cavallo", "Panda"];
+        const [fetchAnimal, setFetchAnimal] = useState([])
+        const JsonPromise = async (url) => {
+            const promise = await fetch(url)
+            const promiseJson = await promise.json()
+            return promiseJson
+        }
+        const animalFunction = async () => {
+            const animalsObb = await JsonPromise("http://localhost:5000/animals/")
+            setFetchAnimal(animalsObb)
+        }
+
         const numeriCasuoali = () => {
             const numeber = Math.floor(Math.random() * 4) + 1;
             console.log(numeber)
             return numeber
         }
         const onClose = () => {
-            show ? setShow(false) : setShow(true) 
+            show ? setShow(false) : setShow(true)
         }
         const onConfirm = () => {
             setAnimalRandom((a) => {
                 const array = [...a]
                 array.push(animalString)
-                
+
                 return array
             })
             setShow(false)
+            setAnimalString("")
         }
         const handleChange = (e) => {
             setAnimalString(e.target.value)
         }
         console.log(animalString)
+        
         const randomAdd = () => {
+           
             setAnimalRandom((a) => {
                 const array = [...a]
                 const randomNumber = numeriCasuoali()
                 array.push(animalsChoices[randomNumber])
                 return array
             })
-            setAnimalString("")
+           
         }
+
+
+
         return (<>
             <details>
                 <summary>Animali </summary>
@@ -81,7 +102,22 @@
                 <button onClick={randomAdd} >Aggiungi un animale casuale</button>
                 <button onClick={onClose}>Aggiungi un animale personalizzato</button>
             </details>
-            
+            <div className="Container-card" >
+                {
+                    fetchAnimal.map((animal,index) => {
+                        return (
+                            <div key={index} className="animal-card">
+                                <h3>{animal.name}</h3>
+                             {!animal.image?<p>Immagine non disponibile</p> : <img src={animal.image} alt={"default"} />} 
+                                <p>{animal.description}</p>
+                            </div>
+                        )
+                    })
+
+                }
+            </div>
+
+
         </>
         )
     }
@@ -91,17 +127,17 @@
 
 <script type="text/babel">
 
-    function Modale({ title, content, show , onClose = () => { }, onConfirm = () => { }, handleChange = () => { }, animalString }) {
+    function Modale({ title, content, show, onClose = () => { }, onConfirm = () => { }, handleChange = () => { }, animalString }) {
         return show && ReactDOM.createPortal(
             <div className="modal-container">
                 <div className="modal">
                     <h2>{title}</h2>
-                    {content} 
-                    { animalString === "" ? <p>inserisci almeno una lettera</p> : ""}
+                    {content}
+                    {animalString === "" ? <p>inserisci almeno una lettera</p> : ""}
                     <div>
                         <input type="text" onChange={handleChange} />
                         <button onClick={onClose}>Chiudi</button>
-                        <button disabled={ animalString === "" ? true : false} onClick={onConfirm}>Conferma</button>
+                        <button disabled={animalString === "" ? true : false} onClick={onConfirm}>Conferma</button>
                     </div>
                 </div>
             </div>,

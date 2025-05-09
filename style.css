@@ -127,3 +127,8 @@ img{
     opacity: 1;
   }
 }
+.Container-card{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
