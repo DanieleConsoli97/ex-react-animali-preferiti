@@ -76,11 +76,12 @@
                         return <li key={index}>{animal}</li>
                     })
                     }
+                    <Modale onConfirm={onConfirm} show={show} onClose={onClose} content={"inserisci il nome dell' animale che vuoi inserire"} handleChange={handleChange} animalString={animalString} />
                 </ul>
                 <button onClick={randomAdd} >Aggiungi un animale casuale</button>
                 <button onClick={onClose}>Aggiungi un animale personalizzato</button>
             </details>
-            <Modale onConfirm={onConfirm} show={show} onClose={onClose} content={"inserisci il nome dell' animale che vuoi inserire"} handleChange={handleChange} animalString={animalString} />
+            
         </>
         )
     }
@@ -91,7 +92,7 @@
 <script type="text/babel">
 
     function Modale({ title, content, show , onClose = () => { }, onConfirm = () => { }, handleChange = () => { }, animalString }) {
-        return show && (
+        return show && ReactDOM.createPortal(
             <div className="modal-container">
                 <div className="modal">
                     <h2>{title}</h2>
@@ -103,7 +104,8 @@
                         <button disabled={ animalString === "" ? true : false} onClick={onConfirm}>Conferma</button>
                     </div>
                 </div>
-            </div>
+            </div>,
+            document.body
         )
     }
 
