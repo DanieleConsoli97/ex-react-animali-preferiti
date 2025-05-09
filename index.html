@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I miei animali Preferiti</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- NOTE - link per inserire react in fase si sviluppo -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+</head>
+<body>
+    <header>
+        <h1>I miei animali Preferiti</h1>
+    </header>
+    <main>
+        <figure>
+            <img src="https://picsum.photos/400/300" alt="Immagine Casuale">
+        </figure>
+        <div class="lista-animali"></div>
+    </main>
+    <footer>
+        <p>Creato con amore da... un collega sbadato! 🐾</p>
+    </footer>
+</body>
+
+<!-- appReact -->
+
+<script type="text/babel">
+    const AnimalApp = () => {
+
+        const { useState } = React
+        const [show, setShow] = useState(false)
+        const [animalString, setAnimalString] = useState("")
+        const animals = ["Cane", "Gatto", "Pappagallo"]
+        const [animalRandom, setAnimalRandom] = useState(animals)
+        const animalsChoices = ["Cane", "Gatto", "Pappagallo", "Cavallo", "Panda"];
+        const numeriCasuoali = () => {
+            const numeber = Math.floor(Math.random() * 4) + 1;
+            console.log(numeber)
+            return numeber
+        }
+        const onClose = () => {
+            show ? setShow(false) : setShow(true) 
+        }
+        const onConfirm = () => {
+            setAnimalRandom((a) => {
+                const array = [...a]
+                array.push(animalString)
+                
+                return array
+            })
+            setShow(false)
+        }
+        const handleChange = (e) => {
+            setAnimalString(e.target.value)
+        }
+        console.log(animalString)
+        const randomAdd = () => {
+            setAnimalRandom((a) => {
+                const array = [...a]
+                const randomNumber = numeriCasuoali()
+                array.push(animalsChoices[randomNumber])
+                return array
+            })
+            setAnimalString("")
+        }
+        return (<>
+            <details>
+                <summary>Animali </summary>
+                <ul>
+                    {animalRandom.map((animal, index) => {
+                        return <li key={index}>{animal}</li>
+                    })
+                    }
+                </ul>
+                <button onClick={randomAdd} >Aggiungi un animale casuale</button>
+                <button onClick={onClose}>Aggiungi un animale personalizzato</button>
+            </details>
+            <Modale onConfirm={onConfirm} show={show} onClose={onClose} content={"inserisci il nome dell' animale che vuoi inserire"} handleChange={handleChange} animalString={animalString} />
+        </>
+        )
+    }
+</script>
+
+<!-- Componente modale -->
+
+<script type="text/babel">
+
+    function Modale({ title, content, show , onClose = () => { }, onConfirm = () => { }, handleChange = () => { }, animalString }) {
+        return show && (
+            <div className="modal-container">
+                <div className="modal">
+                    <h2>{title}</h2>
+                    {content} 
+                    { animalString === "" ? <p>inserisci almeno una lettera</p> : ""}
+                    <div>
+                        <input type="text" onChange={handleChange} />
+                        <button onClick={onClose}>Chiudi</button>
+                        <button disabled={ animalString === "" ? true : false} onClick={onConfirm}>Conferma</button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+</script>
+
+<!-- render app -->
+
+<script type="text/babel">
+    const { createRoot } = ReactDOM
+    const listaAnimali = document.querySelector(".lista-animali")
+    console.log(listaAnimali)
+    const root = createRoot(listaAnimali)
+    root.render(< AnimalApp />)
+</script>
+
+
+</html>
