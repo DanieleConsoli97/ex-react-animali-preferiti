@@ -62,8 +62,10 @@
             show ? setShow(false) : setShow(true)
         }
         const onConfirm = () => {
-            setAnimalRandom((a) => {
-                const array = [...a]
+            setAnimalRandom((curr) => {
+                // NOTE - oppure setAnimals(curr => [...curr,animalString] )
+                const array = [...curr]
+
                 array.push(animalString)
 
                 return array
@@ -79,6 +81,7 @@
         const randomAdd = () => {
            
             setAnimalRandom((a) => {
+                  // NOTE - oppure setAnimals(curr => [...curr,animalsChoices[randomNumber] )
                 const array = [...a]
                 const randomNumber = numeriCasuoali()
                 array.push(animalsChoices[randomNumber])
@@ -134,7 +137,7 @@
                     <h2>{title}</h2>
                     {content}
                     {animalString === "" ? <p>inserisci almeno una lettera</p> : ""}
-                    <div>
+                    <div >
                         <input type="text" onChange={handleChange} />
                         <button onClick={onClose}>Chiudi</button>
                         <button disabled={animalString === "" ? true : false} onClick={onConfirm}>Conferma</button>
